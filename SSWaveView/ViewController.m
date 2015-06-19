@@ -28,10 +28,10 @@
     [self.waveView startAnimate];
     [self.view addSubview:self.waveView];
     
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    button.center = self.view.center;
-    [button addTarget:self action:@selector(onButtonTouch) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button];
+//    UIButton * button = [UIButton buttonWithType:UIButtonTypeContactAdd];
+//    button.center = self.view.center;
+//    [button addTarget:self action:@selector(onButtonTouch) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:button];
     
     
 //    SSAccelerometerWaveView *  aview = [[SSAccelerometerWaveView alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];

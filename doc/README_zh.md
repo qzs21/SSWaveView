@@ -1,22 +1,17 @@
 # SSWaveView
-`SSWaveView` can simulation water wave.
-
-# Language
-* [English](README.md)
-* [中文](doc/README_zh.md)
-
+`SSWaveView`可以模拟水面的波纹。
 
 ========================
 [![Pod Version](http://img.shields.io/cocoapods/v/SSWaveView.svg)](http://cocoadocs.org/docsets/SSWaveView)
 [![Pod Platform](https://img.shields.io/cocoapods/p/SSWaveView.svg)](http://cocoadocs.org/docsets/SSWaveView)
 [![License](http://img.shields.io/cocoapods/l/SSWaveView.svg)](http://opensource.org/licenses/MIT)
 
-## Quick start
+## 快速使用
 
-`SSWaveView` is available on [CocoaPods](http://cocoapods.org). Add the following to your `Podfile`:
+`SSWaveView` 支持 [CocoaPods](http://cocoapods.org). 添加下面配置到 `Podfile`文件:
 ```ruby
 pod 'SSWaveView'
 ```
 
-## Document
+## 文档
 [http://cocoadocs.org/docsets/SSWaveView/](http://cocoadocs.org/docsets/SSWaveView/)

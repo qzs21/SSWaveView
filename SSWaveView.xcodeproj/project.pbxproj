@@ -412,7 +412,7 @@
 				INFOPLIST_FILE = SSWaveView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ad5e871f-5a96-4f8e-8725-ed1ab9dfafe8";
+				PROVISIONING_PROFILE = "daf1b7ae-8642-4b2d-b503-0bedfcb95c41";
 			};
 			name = Debug;
 		};
@@ -424,7 +424,7 @@
 				INFOPLIST_FILE = SSWaveView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ad5e871f-5a96-4f8e-8725-ed1ab9dfafe8";
+				PROVISIONING_PROFILE = "daf1b7ae-8642-4b2d-b503-0bedfcb95c41";
 			};
 			name = Release;
 		};
