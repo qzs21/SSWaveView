@@ -25,7 +25,6 @@
     [super viewDidLoad];
 
     self.waveView = [[SSWaveView alloc] initWithFrame:self.view.bounds];
-    self.waveView.backgroundColor = [UIColor blackColor];
     [self.waveView startAnimate];
     [self.view addSubview:self.waveView];
     

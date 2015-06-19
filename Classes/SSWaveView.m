@@ -56,6 +56,7 @@
 {
     self.backgroundColor = [UIColor clearColor];
     
+    
     self.minAmplitude = 0.5f;
     self.maxAmplitude = 1.0f;
     self.progress = 0.5f;
@@ -70,10 +71,18 @@
     /****** 添加绘制图层 ******/
     self.circleLayer = [CAShapeLayer layer];
     self.circleLayer.path          = [self pathWith:-1].CGPath;
-    self.circleLayer.fillColor     = [UIColor redColor].CGColor;
-    self.circleLayer.strokeColor   = [UIColor redColor].CGColor;
     self.circleLayer.lineWidth     = 2.f;
     [self.layer addSublayer:self.circleLayer];
+    
+    // 设置默认填充颜色
+    self.fillColor = [UIColor colorWithRed:86/255.0f green:202/255.0f blue:139/255.0f alpha:1];
+}
+
+- (void)setFillColor:(UIColor *)fillColor
+{
+    _fillColor = fillColor;
+    self.circleLayer.fillColor = fillColor.CGColor;
+    self.circleLayer.strokeColor = fillColor.CGColor;
 }
 
 - (BOOL)isAnimating
