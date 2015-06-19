@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'SSWaveView'
-  s.version  = '1.0.0'
+  s.version  = '1.0.1'
   s.license  = { :type => 'MIT' }
   s.summary  = 'Wave view. Like water.'
   s.homepage = 'http://www.isteven.cn'
