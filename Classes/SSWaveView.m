@@ -23,9 +23,9 @@
     BOOL mIsInited;
 }
 
-@property (nonatomic, strong) NSTimer * timer; // 动画定时器
-
 @property (nonatomic, strong) CAShapeLayer *circleLayer;
+///当前装满程度
+@property (nonatomic, assign) CGFloat currentProgress;
 
 @end
 
@@ -59,6 +59,7 @@
     
     self.minAmplitude = 0.5f;
     self.maxAmplitude = 1.0f;
+    self.currentProgress = 1.f;
     self.progress = 0.5f;
     
     
@@ -85,10 +86,6 @@
     self.circleLayer.strokeColor = fillColor.CGColor;
 }
 
-- (BOOL)isAnimating
-{
-    return [self.timer isValid];
-}
 - (void)startAnimate
 {
     _isAnimation = YES;
@@ -111,6 +108,13 @@
     if (i% num == 0) {
         self.circleLayer.path = [self pathWith:-1].CGPath;
     }
+
+    if (self.currentProgress > self.progress) {
+        self.currentProgress -= self.progress/num;
+    }
+    if (self.currentProgress < self.progress) {
+        self.currentProgress = self.progress;
+    }
     circleAnim.fromValue = (__bridge id)(self.circleLayer.path);
     circleAnim.toValue   = (__bridge id)[self pathWith:i%num].CGPath;
     circleAnim.delegate = self;
@@ -126,12 +130,15 @@
     if (flag && self.isAnimation) {
         [self animateWave];
     }
+    else {
+        _isAnimation = NO;
+    }
 }
 
 - (UIBezierPath *)pathWith:(int)tag {
-
+    
     CGFloat height = self.frame.size.height;
-    CGFloat py = height*self.progress;
+    CGFloat py = height*self.currentProgress;
     CGFloat px = - (tag+1) * self.waveWidth * self.waveSepeed;
     UIBezierPath* bezierPath = [UIBezierPath bezierPath];
     [bezierPath moveToPoint:CGPointMake(px, py)];
@@ -141,8 +148,8 @@
         [bezierPath addQuadCurveToPoint:CGPointMake(px, py) controlPoint:CGPointMake(px-self.waveWidth/2.0, py+(isAdd?self.controllWaveHeight:-self.controllWaveHeight)*(tag%1==0? self.maxAmplitude:self.minAmplitude))];
         isAdd = !isAdd;
     }
-    [bezierPath addLineToPoint:CGPointMake(px, height)];
-    [bezierPath addLineToPoint:CGPointMake(- (tag+1) * self.waveWidth, height)];
+    [bezierPath addLineToPoint:CGPointMake(px, height+1)];
+    [bezierPath addLineToPoint:CGPointMake(- (tag+1) * self.waveWidth, height+1)];
     [bezierPath addLineToPoint:CGPointMake(- (tag+1) * self.waveWidth, py)];
     [bezierPath closePath];
     
