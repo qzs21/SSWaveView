@@ -12,3 +12,6 @@ SSWaveView is available on [CocoaPods](http://cocoapods.org). Add the following 
 ```ruby
 pod 'SSWaveView'
 ```
+
+## Document
+[http://cocoadocs.org/docsets/SSWaveView/](http://cocoadocs.org/docsets/SSWaveView/)
