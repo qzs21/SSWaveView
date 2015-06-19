@@ -13,5 +13,8 @@
 pod 'SSWaveView'
 ```
 
+# 截图
+![](doc/snapshot/SSWaveView.gif)
+
 ## 文档
 [http://cocoadocs.org/docsets/SSWaveView/](http://cocoadocs.org/docsets/SSWaveView/)

@@ -18,5 +18,9 @@
 pod 'SSWaveView'
 ```
 
+# Snapshot
+![](doc/snapshot/SSWaveView.gif)
+
+
 ## Document
 [http://cocoadocs.org/docsets/SSWaveView/](http://cocoadocs.org/docsets/SSWaveView/)
