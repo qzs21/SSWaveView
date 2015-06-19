@@ -25,136 +25,119 @@
 
 @property (nonatomic, strong) NSTimer * timer; // 动画定时器
 
+@property (nonatomic, strong) CAShapeLayer *circleLayer;
+
 @end
 
 
 @implementation SSWaveView
 
-- (instancetype)init
-{
-    if (self = [super init])
-    {
-        [self initWaterView];
-    }
-    return self;
-}
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame])
     {
-        [self initWaterView];
+        [self initWaveView];
     }
     return self;
 }
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    [self initWaterView];
+    [self initWaveView];
+}
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    self.circleLayer.frame = self.bounds;
 }
 
-
-- (void)initWaterView
+- (void)initWaveView
 {
     self.backgroundColor = [UIColor clearColor];
     
-    self.waveHeight = 5.0;
     self.minAmplitude = 0.5f;
     self.maxAmplitude = 1.0f;
-    self.wavelength = M_PI;
     self.progress = 0.5f;
-    self.speed = 1.0;
     
-    // TODO 按照设备性能进行调整
-    self.fps = 50.0f;
+    
+    self.waveSepeed = 1;
+    self.controllWaveHeight = 20.f;
+    self.waveWidth = 180.f;
+    
+    
+    
+    /****** 添加绘制图层 ******/
+    self.circleLayer = [CAShapeLayer layer];
+    self.circleLayer.path          = [self pathWith:-1].CGPath;
+    self.circleLayer.fillColor     = [UIColor redColor].CGColor;
+    self.circleLayer.strokeColor   = [UIColor redColor].CGColor;
+    self.circleLayer.lineWidth     = 2.f;
+    [self.layer addSublayer:self.circleLayer];
 }
+
 - (BOOL)isAnimating
 {
     return [self.timer isValid];
 }
 - (void)startAnimate
 {
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0/self.fps
-                                                  target:self
-                                                selector:@selector(animateWave)
-                                                userInfo:nil
-                                                 repeats:YES];
+    _isAnimation = YES;
+    [self animateWave];
 }
 - (void)stopAnimate
 {
-    [self.timer invalidate];
-    self.timer = nil;
+    _isAnimation = NO;
 }
 
 -(void)animateWave
 {
-    // 计算当前震幅
-    if (mCurrentYAmplitude > self.maxAmplitude)
-    {
-        mIsPlus = NO;
-        mCurrentYAmplitude = self.maxAmplitude;
-    }
-    if (mCurrentYAmplitude < self.minAmplitude)
-    {
-        mIsPlus = YES;
-        mCurrentYAmplitude = self.minAmplitude;
-    }
-    if (mCurrentXOffset > 2 * M_PI)
-    {
-        mCurrentXOffset = 0;
-    }
+    static int i = 0;
     
-    mCurrentYAmplitude += (mIsPlus ? 1.0 : -1.0) * (self.maxAmplitude - self.minAmplitude) / self.fps * self.speed;
-    mCurrentXOffset += (2 * M_PI) * ( 1.0 / self.fps) * self.speed;
+    CABasicAnimation *circleAnim = [CABasicAnimation animationWithKeyPath:@"path"];
+    circleAnim.removedOnCompletion = NO;
+    circleAnim.duration  = 0.5;
+    circleAnim.timingFunction = [CAMediaTimingFunction functionWithName:@"linear"];
+    int num = (int)(4/self.waveSepeed);
+    if (i% num == 0) {
+        self.circleLayer.path = [self pathWith:-1].CGPath;
+    }
+    circleAnim.fromValue = (__bridge id)(self.circleLayer.path);
+    circleAnim.toValue   = (__bridge id)[self pathWith:i%num].CGPath;
+    circleAnim.delegate = self;
+    self.circleLayer.path = [self pathWith:i%num].CGPath;
+    [self.circleLayer addAnimation:circleAnim forKey:@"animateCirclePath"];
     
-    [self setNeedsDisplay];
+    i++;
+
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    [super drawRect:rect];
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // 填充背景色
-    [self.backgroundColor setFill];
-    CGContextFillRect(context, rect);
-    
-    // 画水
-    UIColor * fillColor = self.fillColor;
-    if (self.fillColor == nil)
-    {
-        fillColor = [UIColor colorWithRed:86/255.0f green:202/255.0f blue:139/255.0f alpha:1];
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+
+    if (flag && self.isAnimation) {
+        [self animateWave];
     }
-    CGContextSetLineWidth(context, 1);
-    CGContextSetFillColorWithColor(context, [fillColor CGColor]);
-    
-    CGFloat currentLinePointY = self.progress*self.frame.size.height;
-    CGFloat y = self.frame.size.height;
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, 0, y);
-    for(CGFloat x = 0; x <= self.frame.size.width; x++)
-    {
-        // 计算出 2 * M_PI 在View中的长度
-        CGFloat one_x =  self.frame.size.width / (self.wavelength / (2*M_PI));
-        // 计算出 在 0~2*M_PI 范围中，x轴的位置
-        CGFloat cell_x = (int)x % (int)one_x * ( x > 0 ? 1.0 : -1.0);
-        // 计算出当前弧度
-        CGFloat radian = 2 * M_PI * (cell_x/one_x);
-        // 算出y轴的值
-        y = mCurrentYAmplitude * sin(radian+mCurrentXOffset) * self.waveHeight + (self.waveHeight + self.frame.size.height * (1.0-self.progress));
-        
-        CGPathAddLineToPoint(path, nil, x, y);
+}
+
+- (UIBezierPath *)pathWith:(int)tag {
+
+    CGFloat height = self.frame.size.height;
+    CGFloat py = height*self.progress;
+    CGFloat px = - (tag+1) * self.waveWidth * self.waveSepeed;
+    UIBezierPath* bezierPath = [UIBezierPath bezierPath];
+    [bezierPath moveToPoint:CGPointMake(px, py)];
+    BOOL isAdd = YES;
+    while (px<self.frame.size.width+((4/self.waveSepeed)-tag) * self.waveWidth * self.waveSepeed) {
+        px += self.waveWidth;
+        [bezierPath addQuadCurveToPoint:CGPointMake(px, py) controlPoint:CGPointMake(px-self.waveWidth/2.0, py+(isAdd?self.controllWaveHeight:-self.controllWaveHeight)*(tag%1==0? self.maxAmplitude:self.minAmplitude))];
+        isAdd = !isAdd;
     }
+    [bezierPath addLineToPoint:CGPointMake(px, height)];
+    [bezierPath addLineToPoint:CGPointMake(- (tag+1) * self.waveWidth, height)];
+    [bezierPath addLineToPoint:CGPointMake(- (tag+1) * self.waveWidth, py)];
+    [bezierPath closePath];
     
-    CGPathAddLineToPoint(path, nil, rect.size.width, rect.size.height);
-    CGPathAddLineToPoint(path, nil, 0, rect.size.height);
-    CGPathAddLineToPoint(path, nil, 0, currentLinePointY);
-    
-    CGContextAddPath(context, path);
-    CGContextFillPath(context);
-    CGContextDrawPath(context, kCGPathStroke);
-    CGPathRelease(path);
-    
+    return bezierPath;
 }
 
 @end
