@@ -1,5 +1,5 @@
 # SSWaveView
-`SSWaveView` can simulation water wave.
+`SSwaveView` can simulate water wave.
 
 # Language
 * [English](README.md)
